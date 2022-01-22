@@ -5,8 +5,7 @@ require 'net/http'
 poolSize = 10
 fromDate = [2019, 03, 22]
 toDate = [2019, 03, 29]
-serviceProto = 'http://'
-serviceHost = '127.0.0.1:9200'
+serviceUrl = 'http://127.0.0.1:9200'
 serviceParams = {
     :getIndexes => '_cat/indices?v',
     :closeIndex => '%s/_close',
@@ -33,7 +32,7 @@ end
 puts "working on index #{filter} from #{fromDate} to #{toDate}"
 
 begin
-    uri = URI "#{serviceProto}#{serviceHost}/#{serviceParams[:getIndexes]}"
+    uri = URI "#{serviceUrl}/#{serviceParams[:getIndexes]}"
     response = Net::HTTP.get_response uri
     indexes = response.body
 
@@ -67,7 +66,7 @@ begin
                         begin
                             while index = indexesToClose.pop(true)
                                 begin
-                                    uri = URI sprintf "#{serviceProto}#{serviceHost}/#{serviceParams[:closeIndex]}", index
+                                    uri = URI sprintf "#{serviceUrl}/#{serviceParams[:closeIndex]}", index
                                     http = Net::HTTP.new uri.host, uri.port
                                     request = Net::HTTP::Post.new "#{uri.path}?#{uri.query}"
                                     response = http.request request
